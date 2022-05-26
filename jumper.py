@@ -1,77 +1,62 @@
 class Jumper:
-    """
-    The Jumper class manages the parachute size and draws it on the screen
-    accordingly.
-
-    The parachute lines will be deleted every time remove_line() is called.
-    If there are no remaining lines on the parachute, the player's head will be
-    replaced by an "x".
-
+    """The jumper (player) guessing the word. 
+    
+    The responsibility of Jumper is to tack the number of attemprs and create a draw representing the status (number of opportunities).
+    
     Attributes:
-        parachute_lines (list): list of tuples containing the X and Y
-        coordinates of each line and the char in the position.
-    """
+        _error_count (int): The number of failed attempts guessing teh word
+    """    
 
-    def __init__(self):
+    def __init__(self) -> None:
+        self._error_count = 0
+
+    def draw_jumper(self):
+        """ Provides a fdrawing of the jumper based on the number of incorrect guesses 
+
+            Args:
+                self (Jumper): An instance of Jumper.
+
+            Returns:
+                string: A drawing representing the status of the jumpers
         """
-        Constructs the Jumper object and initializes the starting parachute.
-        """
-        self.parachute_lines = [
-            (2, 0, "_"), (3, 0, "_"), (4, 0, "_"),
-            (1, 1, "/"), (2, 1, "_"), (3, 1, "_"), (4, 1, "_"), (5, 1, "\\"),
-            (1, 2, "\\"), (5, 2, "/"),
-            (2, 3, "\\"), (4, 3, "/")
-        ]
-
-    def get_parachute_size(self):
-        """
-        Gets the current number of lines in the parachute.
-
-        Returns:
-            Integer representing the number of lines left in the parachute.
-        """
-        return len(self.parachute_lines)
-
-    def remove_line(self):
-        """
-        Remove a single line from the parachute. If there are no more lines,
-        ignore call.
-        """
-        if self.get_parachute_size() > 0:
-            self.parachute_lines.pop(0)
-
-    def draw(self):
-        """
-        Draws parachute based on the number of lines left, the player, and the
-        floor.
-        """
-        last_drawn_x = -1
-        last_drawn_y = 0
-
-        # Draw parachute
-        for line in self.parachute_lines:
-            x, y, char = line
-
-            while last_drawn_y < y:
-                print("\n", end="")
-                last_drawn_y += 1
-                last_drawn_x = -1
-
-            while last_drawn_x < x:
-                last_drawn_x += 1
-
-                if last_drawn_x < x:
-                    print(" ", end="")
-
-            print(char, end="")
-
-        # Draw player
-        if self.get_parachute_size() == 0:
-            print("\n   x")
+        drawing = []
+        if self._error_count == 0:
+            drawing.append("   ___")
+        if self._error_count <= 1:
+            drawing.append("  /___\\")
+        if self._error_count <= 2:
+            drawing.append("  \   /")
+        if self._error_count <= 3:
+            drawing.append("   \ /")
+            drawing.append("    0")
         else:
-            print("\n   o")
+            drawing.append("    x")
 
-        print("  /|\\\n  / \\")
+        drawing.append("   /|\\")
+        drawing.append("   / \\")
+        drawing.append("      ")
+        drawing.append("^^^^^^^^^")
 
-        # Draw floor
-        print("\n^^^^^^^")
+        return "\n".join(drawing)
+
+    def add_incorrect_guess(self):
+        """ Adds up on counting of incorrect guesses 
+
+            Args:
+                self (Jumper): An instance of Jumper.
+
+            Returns:
+                Nothing
+        """
+        self._error_count += 1
+
+    def can_guess(self):
+        """ Checks if no more than 3 incorrect guesses have been made
+
+            Args:
+                self (Jumper): An instance of Jumper.
+
+            Returns:
+                boolean: True if number of incorrect guesses is less than 4; false if otherwise.
+        """
+        return self._error_count < 4
