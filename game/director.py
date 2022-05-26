@@ -1,6 +1,6 @@
-from jumper import Jumper
-from puzzle import Puzzle
-from terminal_service import TerminalService
+from game.jumper import Jumper
+from game.puzzle import Puzzle
+from game.terminal_service import TerminalService
 
 class Director:
     """A person who directs the game. 
